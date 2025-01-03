@@ -1,0 +1,24 @@
+class JsonAnalaticsTool {
+    public void performAnalatics(String jsonString) {
+        System.out.println("Analysing json string : " + jsonString);
+    }
+}
+interface AnalaticAdapter {
+    public void performAnalatics(String jsonString);
+}
+class XMLAnalaticsAdapter implements AnalaticAdapter {
+    JsonAnalaticsTool jsonAnalaticsTool;
+    public XMLAnalaticsAdapter() {
+        jsonAnalaticsTool = new JsonAnalaticsTool();
+    }
+    public void performAnalatics(String xmlString) {
+        String newData = "JSON " + xmlString;
+        jsonAnalaticsTool.performAnalatics(newData);
+    }
+}
+class Main {
+    public static void main(String[] args) {
+        XMLAnalaticsAdapter adapter = new XMLAnalaticsAdapter();
+        adapter.performAnalatics("XML DATA");
+    }
+}

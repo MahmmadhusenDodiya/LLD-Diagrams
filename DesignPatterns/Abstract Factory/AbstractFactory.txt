@@ -1,0 +1,71 @@
+package AbstractFacotory;
+import java.util.Scanner;
+interface IButton {
+    void press();
+}
+class MacButton implements IButton {
+    @Override public void press() {
+        System.out.println("Mac Button Pressed");
+    }
+}
+class WindowsButton implements IButton {
+    @Override public void press() {
+        System.out.println("Windows Button Pressed");
+    }
+}
+interface ITextBox {
+    void setText();
+}
+class WindowsTextBox implements ITextBox {
+    @Override public void setText() {
+        System.out.println("Seting Text into Windows TextBox");
+    }
+}
+class MacTextBox implements ITextBox {
+    @Override public void setText() {
+        System.out.println("Seting Text into Mac TextBox");
+    }
+}
+interface IFactory {
+    public IButton createButton();
+    public ITextBox createTextBox();
+}
+class MacComponents implements IFactory {
+    @Override public IButton createButton() {
+        return new MacButton();
+    }
+    @Override public ITextBox createTextBox() {
+        return new MacTextBox();
+    }
+}
+class WindowsComponets implements IFactory {
+    @Override public IButton createButton() {
+        return new WindowsButton();
+    }
+    @Override public ITextBox createTextBox() {
+        return new MacTextBox();
+    }
+}
+class GUIAbstractFactory {
+    public static IFactory createFactory(String type) throws Exception {
+        if (type.equals("WINDOWS")) {
+            return new WindowsComponets();
+        } else if (type.equals("MAC")) {
+            return new MacComponents();
+        } else {
+            throw new Exception("Illigel Argument : type");
+        }
+    }
+}
+public class AbstractFactoryDemo {
+    public static void main(String args[]) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        String type;
+        type = scanner.next();
+        IFactory factory = GUIAbstractFactory.createFactory(type);
+        IButton button = factory.createButton();
+        ITextBox textbox = factory.createTextBox();
+        button.press();
+        textbox.setText();
+    }
+}
