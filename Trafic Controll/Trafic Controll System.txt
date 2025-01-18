@@ -1,0 +1,136 @@
+package ThreadWaitDemo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class Signal {
+    private String state;
+
+    public Signal() {
+        this.state = "Red"; // Default state
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getState() {
+        return state;
+    }
+}
+
+
+class Road {
+    private String name;
+    private Signal signal;
+    private TrafficController mediator;
+
+    public Road(String name, TrafficController mediator) {
+        this.name = name;
+        this.signal = new Signal();
+        this.mediator = mediator;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Signal getSignal() {
+        return signal;
+    }
+
+    public void requestGreen() {
+        System.out.println(name + " is requesting Green.");
+        mediator.changeSignal(this);
+    }
+
+    public void setSignalState(String state) {
+        signal.setState(state);
+        System.out.println(name + " signal is now " + state + ".");
+    }
+}
+
+
+
+
+class TrafficController {
+    private List<Road> roads;
+
+    public TrafficController() {
+        this.roads = new ArrayList<>();
+    }
+
+    public void addRoad(Road road) {
+        roads.add(road);
+    }
+    
+    public List<Road> getRoadList()
+    {
+        return roads;
+    }
+
+    public void changeSignal(Road requestingRoad) {
+        for (Road road : roads) {
+            if (road == requestingRoad) {
+                road.setSignalState("Green");
+            } else {
+                road.setSignalState("Red");
+            }
+        }
+    }
+}
+
+
+
+public class Main {
+    public static void main(String[] args) {
+        
+        TrafficController trafficController = new TrafficController();
+
+        // Create roads and associate them with the TrafficController
+        Road road1 = new Road("Road 1", trafficController);
+        Road road2 = new Road("Road 2", trafficController);
+        Road road3 = new Road("Road 3", trafficController);
+
+        // Add roads to the TrafficController
+        trafficController.addRoad(road1);
+        trafficController.addRoad(road2);
+        trafficController.addRoad(road3);
+
+        Thread t1=new Thread(()->{
+            List<Road> l=trafficController.getRoadList();
+            while(true)
+            {
+                for(int i=0;i<l.size();i++)
+                {
+                    l.get(i).requestGreen();
+                    try{
+                    Thread.sleep(1200);
+                    }
+                    catch(InterruptedException  e)
+                    {
+                       return;
+                    }
+                }
+            }
+        });
+        
+        t1.start();
+        
+        try{
+        	System.out.println("Inside TRY");
+                    Thread.sleep(3000);
+                    System.out.println("Inside AFTERT SLEEP");
+                     t1.interrupt();
+                     System.out.println("Inside AFTER INTUREPET");
+                    }
+                    catch(InterruptedException  e)
+                    {
+                      //   throw new InterruptedException();
+                    }
+       
+        
+        
+    }
+}
+
